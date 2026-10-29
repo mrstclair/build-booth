@@ -91,6 +91,119 @@ footer.locked{opacity:.3;pointer-events:none}
 .tbtn.other{border:2px dashed var(--line);background:transparent}
 .closeRow{display:flex;justify-content:flex-end;margin-top:18px}
 
+/* photo gallery */
+.gallery{position:fixed;inset:0;background:var(--navy);z-index:22;display:none;flex-direction:column}
+.gallery.show{display:flex}
+.gHead{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+.gHead h2{font-size:28px;margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+.gBtn{background:var(--navy-3);border-radius:999px;padding:10px 18px;font-size:18px;font-weight:600}
+.gClose{width:48px;height:48px;padding:0;font-size:20px}
+.gTabs{display:flex;background:var(--navy-2);border:2px solid var(--line);border-radius:999px;padding:4px}
+.gTab{background:transparent;border-radius:999px;padding:9px 16px;font-size:17px;font-weight:600;color:var(--muted)}
+.gTab.on{background:var(--orange);color:#fff}
+.gBody{flex:1;overflow-y:auto;padding:18px;-webkit-overflow-scrolling:touch}
+.gEmpty{display:grid;place-items:center;text-align:center;min-height:50vh;color:var(--muted);font-size:22px;line-height:1.5}
+.gEmpty b{display:block;font-size:56px;margin-bottom:8px}
+.gGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.gBigGrid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.gBigGrid .gThumb .cap{font-size:16px;padding:6px 10px}
+@media (max-width:700px){.gBigGrid{grid-template-columns:1fr}}
+.gDate{font-size:20px;font-weight:700;color:var(--orange-2);margin:18px 2px 10px}
+.gDate:first-child{margin-top:0}
+.gThumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--navy-2);border:2px solid transparent;padding:0}
+.gThumb:active,.gThumb:focus-visible{border-color:var(--orange)}
+.gThumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gThumb .cap{position:absolute;left:0;right:0;bottom:0;padding:4px 8px;font-size:13px;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,.7));text-align:left}
+.gThumb .spin{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.gThumb.err .spin{font-size:26px}
+.gClassGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.gClass{background:var(--navy-2);border:2px solid var(--line);border-radius:18px;padding:0;overflow:hidden;text-align:left}
+.gClass:active{border-color:var(--orange)}
+.gClass .cover{aspect-ratio:16/9;background:var(--navy-3);display:grid;place-items:center;font-size:40px;overflow:hidden}
+.gClass .cover img{width:100%;height:100%;object-fit:cover;display:block}
+.gClass .meta{padding:10px 14px 12px}
+.gClass .meta b{display:block;font-size:22px}
+.gClass .meta span{color:var(--muted);font-size:15px}
+.gMore{display:block;margin:20px auto 6px}
+.gNote{color:var(--muted);font-size:16px;margin-bottom:12px}
+/* PIN pad */
+.pinBox{max-width:340px;margin:4vh auto 0;text-align:center}
+.pinBox h3{font-size:26px;margin-bottom:6px}
+.pinBox p{color:var(--muted);font-size:17px;margin-bottom:16px}
+.pinDots{display:flex;justify-content:center;gap:14px;margin-bottom:18px;min-height:26px}
+.pinDots i{width:22px;height:22px;border-radius:50%;border:3px solid var(--orange-2)}
+.pinDots i.f{background:var(--orange-2)}
+.pinDots.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.pinPad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pinPad button{height:72px;border-radius:18px;background:var(--navy-3);font-size:30px;font-weight:700}
+.pinPad button:active{background:var(--orange)}
+.pinPad .ok{background:var(--green)}
+.pinMsg{color:#FF8A8A;font-size:18px;min-height:26px;margin-top:12px}
+/* lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(3,7,18,.96);z-index:24;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
+.lightbox.show{display:flex}
+.lbStage{display:flex;align-items:center;gap:12px;width:100%;justify-content:center;min-height:0;flex:1}
+.lbImgWrap{position:relative;flex:1;max-width:min(1280px,100%);display:flex;align-items:center;justify-content:center;min-height:0;height:100%}
+.lbImgWrap img{max-width:100%;max-height:calc(100dvh - 190px);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.lbLoading{position:absolute;inset:0;display:none;place-items:center;font-size:22px;color:var(--muted)}
+.lbLoading.show{display:grid}
+.lbNav{width:58px;height:58px;border-radius:50%;background:var(--navy-3);font-size:34px;font-weight:700;flex:0 0 auto}
+.lbNav:disabled{opacity:.25}
+.lbInfo{font-size:18px;color:var(--muted);text-align:center}
+.lbActions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.lbActions .big{height:60px;font-size:20px;padding:0 22px;text-decoration:none;color:#fff}
+@media (max-width:700px){
+  .gHead h2{font-size:22px;max-width:60vw}
+  .gTabs{order:5;width:100%}
+  .gTab{flex:1}
+  .gGrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .gClassGrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .lbNav{width:44px;height:44px;font-size:26px}
+  .lbActions .big{height:52px;font-size:17px;padding:0 14px}
+}
+
+/* select + send */
+.gThumb .check{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:3px solid #fff;background:rgba(0,0,0,.35);display:none;place-items:center;font-size:20px;font-weight:700;color:#fff}
+.selecting .gThumb .check{display:grid}
+.selecting .gThumb.sel{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange)}
+.selecting .gThumb.sel .check{background:var(--orange);border-color:var(--orange)}
+.selecting .gThumb.sel img{opacity:.85}
+#gSelect.on{background:var(--orange)}
+.selBar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:2px solid var(--line);background:var(--navy-2);flex-wrap:wrap}
+.selBar[hidden]{display:none}
+.selCount{font-size:20px;font-weight:700;margin-right:auto}
+.selSend{height:58px;font-size:22px;padding:0 26px}
+.sendDlg{position:fixed;inset:0;background:rgba(3,7,18,.85);z-index:26;display:none;place-items:center;padding:16px}
+.sendDlg.show{display:grid}
+.sendCard{background:var(--navy-2);border:2px solid var(--line);border-radius:22px;padding:22px;width:min(720px,100%);max-height:calc(100dvh - 32px);overflow-y:auto}
+.sendCard h2{font-size:28px;margin-bottom:10px}
+.sendStrip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.sendStrip img{height:64px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex:0 0 auto;background:var(--navy-3)}
+.sendStrip .more{height:64px;padding:0 14px;display:grid;place-items:center;background:var(--navy-3);border-radius:8px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.sendLabel{font-size:15px;font-weight:700;color:var(--orange-2);letter-spacing:1px;text-transform:uppercase;margin:12px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip2{background:var(--navy-3);border:2px solid var(--line);border-radius:999px;padding:9px 14px;font-size:17px;font-weight:600;text-align:left}
+.chip2 small{color:var(--muted);font-weight:500;margin-left:6px}
+.chip2.on{background:var(--orange);border-color:var(--orange)}
+.chip2.on small{color:#fff}
+.chip2.on::before{content:'✓ '}
+.addRow{display:flex;gap:8px;margin-top:10px}
+.addRow input{flex:1;min-width:0;height:48px;border-radius:12px;border:2px solid var(--line);background:var(--navy);color:#fff;font:inherit;font-size:17px;padding:0 14px}
+.sendHint{color:var(--muted);font-size:14px;margin-top:6px;min-height:18px}
+#sendMsg{width:100%;border-radius:12px;border:2px solid var(--line);background:var(--navy);color:#fff;font:inherit;font-size:18px;padding:12px 14px;resize:vertical}
+.sendErr{color:#FF8A8A;font-size:17px;min-height:24px;margin-top:8px}
+.sendActions{display:flex;justify-content:flex-end;gap:12px;margin-top:6px;flex-wrap:wrap}
+.sendActions .big{height:60px;font-size:22px}
+@media (max-width:700px){
+  .selCount{font-size:17px;flex-basis:100%}
+  .selBar .gBtn{font-size:15px;padding:8px 12px}
+  .selSend{flex:1}
+  .sendCard{padding:16px}
+  .sendCard h2{font-size:22px}
+  .sendActions .big{flex:1;justify-content:center;white-space:nowrap;font-size:20px;padding:0 12px}
+}
+
 /* toast + blocker */
 .toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:var(--navy-2);border:4px solid var(--orange);
   border-radius:30px;padding:30px 46px;font-size:40px;font-weight:700;text-align:center;opacity:0;pointer-events:none;transition:.2s;max-width:80vw;
@@ -150,6 +263,7 @@ footer.locked{opacity:.3;pointer-events:none}
     <div class="logo" id="logo"><div class="paw">🐯</div><div>Build Booth<small>TIGER LAB</small></div></div>
     <div class="spacer"></div>
     <div class="pending" id="pending" hidden></div>
+    <button class="flipBtn" id="galleryBtn">🖼️ Photos</button>
     <button class="flipBtn" id="flipBtn" hidden>🔄 Flip camera</button>
     <div class="classPill"><span>📁</span><span class="who none" id="who">Loading…</span><button class="pillBtn" id="changeBtn">Change</button></div>
     <div class="clock" id="clock"></div>
@@ -184,6 +298,64 @@ footer.locked{opacity:.3;pointer-events:none}
     <p>Tap your teacher's name.</p>
     <div class="grid" id="pickGrid"></div>
     <div class="closeRow"><button class="big retake" id="pickClose">✖ Cancel</button></div>
+  </div>
+</div>
+
+<!-- Photo gallery -->
+<div class="gallery" id="gallery" aria-hidden="true">
+  <div class="gHead">
+    <button class="gBtn" id="gBack" hidden>‹ Back</button>
+    <h2 id="gTitle">Photos</h2>
+    <button class="gBtn" id="gSelect" hidden>☑️ Select to send</button>
+    <div class="gTabs">
+      <button class="gTab on" data-tab="recent">📸 Just taken</button>
+      <button class="gTab" data-tab="classes">🔒 Class photos</button>
+    </div>
+    <button class="gBtn gClose" id="gClose" aria-label="Close photos">✖</button>
+  </div>
+  <div class="gBody" id="gBody"></div>
+  <div class="selBar" id="selBar" hidden>
+    <span class="selCount" id="selCount">0 selected</span>
+    <button class="gBtn" id="selToday">Select today's</button>
+    <button class="gBtn" id="selClear">Clear</button>
+    <button class="big save selSend" id="selSend" disabled>✉️ Send</button>
+  </div>
+</div>
+
+<!-- Send photos dialog -->
+<div class="sendDlg" id="sendDlg" aria-hidden="true">
+  <div class="sendCard">
+    <h2 id="sendTitle">Send photos</h2>
+    <div class="sendStrip" id="sendStrip"></div>
+    <div class="sendLabel">Send to</div>
+    <div class="chips" id="sendChips"></div>
+    <div class="addRow">
+      <input id="sendExtra" type="email" inputmode="email" autocomplete="off" placeholder="Add another email">
+      <button class="gBtn" id="sendAdd">Add</button>
+    </div>
+    <div class="sendHint" id="sendHint"></div>
+    <div class="sendLabel">Message</div>
+    <textarea id="sendMsg" rows="3" maxlength="1500"></textarea>
+    <div class="sendErr" id="sendErr"></div>
+    <div class="sendActions">
+      <button class="big retake" id="sendCancel">Cancel</button>
+      <button class="big save" id="sendGo">✉️ Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lbStage">
+    <button class="lbNav" id="lbPrev" aria-label="Previous photo">‹</button>
+    <div class="lbImgWrap"><img id="lbImg" alt="Photo"><div class="lbLoading" id="lbLoading">Loading…</div></div>
+    <button class="lbNav" id="lbNext" aria-label="Next photo">›</button>
+  </div>
+  <div class="lbInfo" id="lbInfo"></div>
+  <div class="lbActions">
+    <button class="big save" id="lbSend">✉️ Send</button>
+    <a class="big retake" id="lbDownload" download>⬇ Download</a>
+    <a class="big retake" id="lbDrive" target="_blank" rel="noopener">📁 Open in Drive</a>
+    <button class="big retake" id="lbClose">✖ Close</button>
   </div>
 </div>
 
@@ -250,6 +422,7 @@ function wireUi() {
   $('snapBtn').onclick = snap;
   $('changeBtn').onclick = () => { unlockAudio(); pickClass(); };
   $('flipBtn').onclick = () => { unlockAudio(); flipCamera(); };
+  wireGallery();
   $('saveBtn').onclick = () => saveShot();
   $('retakeBtn').onclick = retake;
   $('blockBtn').onclick = () => location.reload();
@@ -264,6 +437,7 @@ function wireUi() {
   // Keyboard / USB arcade button / presenter clicker
   document.addEventListener('keydown', e => {
     if ($('picker').classList.contains('show')) return;
+    if (galleryKeys(e)) return; // gallery/lightbox handle their own keys
     const reviewing = $('review').classList.contains('show');
     if ([' ', 'Enter', 'PageDown', 'ArrowRight'].includes(e.key)) {
       e.preventDefault();
@@ -495,6 +669,7 @@ async function saveShot() {
   $('saveBtn').disabled = true; $('retakeBtn').disabled = true;
   $('autoNote').textContent = 'Saving…';
 
+  rememberRecent(shot); // "Just taken" tab on this device
   const ok = await upload(shot);
   $('review').classList.remove('show');
   state.shot = null;
@@ -837,8 +1012,483 @@ function shutter() {
 }
 function cheer() { [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.16, i * 0.11)); }
 
+/* ======================= PHOTO GALLERY ======================= */
+// "Just taken": photos snapped on THIS device today, kept in this browser only (no PIN).
+// "Class photos": every saved photo, browsed by class from Drive, behind GALLERY_PIN.
+const RECENT_KEY = 'bb_recent', RECENT_MAX = 16, GALLERY_IDLE_SEC = 120, PAGE_SIZE = 30;
+const gal = { tab: 'recent', pin: null, view: 'pin', teacher: null, photos: [], total: 0, classes: [], items: [], index: 0, thumbs: {}, idle: null, token: 0,
+  selecting: false, selected: [], contacts: null, mail: null, sendIds: [], extra: [] };
+
+function wireGallery() {
+  $('galleryBtn').onclick = () => { unlockAudio(); openGallery(); };
+  $('gClose').onclick = closeGallery;
+  $('gBack').onclick = () => { gal.view = 'classes'; renderGallery(); };
+  document.querySelectorAll('.gTab').forEach(b => b.onclick = () => { gal.tab = b.dataset.tab; renderGallery(); });
+  $('lbClose').onclick = closeLightbox;
+  $('lbPrev').onclick = () => showLightbox(gal.index - 1);
+  $('lbNext').onclick = () => showLightbox(gal.index + 1);
+  ['pointerdown', 'keydown', 'scroll'].forEach(ev => $('gallery').addEventListener(ev, bumpIdle, true));
+  $('lightbox').addEventListener('pointerdown', bumpIdle, true);
+  ['pointerdown', 'keydown', 'input'].forEach(ev => $('sendDlg').addEventListener(ev, bumpIdle, true));
+  // select + send
+  $('gSelect').onclick = () => setSelecting(!gal.selecting);
+  $('selClear').onclick = () => { gal.selected = []; syncSelection(); };
+  $('selToday').onclick = selectToday;
+  $('selSend').onclick = () => openSend(gal.selected.slice());
+  $('lbSend').onclick = () => { const it = gal.items[gal.index]; if (it && it.id) openSend([it.id]); };
+  $('sendCancel').onclick = closeSend;
+  $('sendGo').onclick = doSend;
+  $('sendAdd').onclick = addExtraEmail;
+  $('sendExtra').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addExtraEmail(); } });
+}
+
+function galleryOpen() { return $('gallery').classList.contains('show'); }
+
+function galleryKeys(e) {
+  if ($('sendDlg').classList.contains('show')) {
+    if (e.key === 'Escape') closeSend();
+    return true; // let typing in the dialog work normally
+  }
+  if ($('lightbox').classList.contains('show')) {
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') showLightbox(gal.index - 1);
+    else if (e.key === 'ArrowRight') showLightbox(gal.index + 1);
+    return true;
+  }
+  if (galleryOpen()) {
+    if (e.key === 'Escape') closeGallery();
+    else if (gal.tab === 'classes' && gal.view === 'pin' && /^[0-9]$/.test(e.key)) pinPress(e.key);
+    else if (gal.tab === 'classes' && gal.view === 'pin' && e.key === 'Backspace') pinPress('⌫');
+    else if (gal.tab === 'classes' && gal.view === 'pin' && e.key === 'Enter') pinPress('✓');
+    return true;
+  }
+  return false;
+}
+
+function openGallery() {
+  if (state.busy) return;
+  gal.tab = 'recent';
+  $('gallery').classList.add('show');
+  $('gallery').setAttribute('aria-hidden', 'false');
+  renderGallery(); bumpIdle();
+}
+
+function closeGallery() {
+  closeSend();
+  closeLightbox();
+  gal.selecting = false; gal.selected = []; gal.contacts = null;
+  $('gallery').classList.remove('show');
+  $('gallery').setAttribute('aria-hidden', 'true');
+  gal.pin = null; gal.view = 'pin'; gal.teacher = null; gal.classes = []; gal.photos = [];
+  clearTimeout(gal.idle); gal.token++;
+}
+
+// Kiosk safety: an unattended gallery closes itself and locks Class photos again.
+function bumpIdle() {
+  clearTimeout(gal.idle);
+  if (galleryOpen()) gal.idle = setTimeout(closeGallery, GALLERY_IDLE_SEC * 1000);
+}
+
+function renderGallery() {
+  document.querySelectorAll('.gTab').forEach(b => b.classList.toggle('on', b.dataset.tab === gal.tab));
+  const inClass = gal.tab === 'classes' && gal.view === 'class';
+  $('gBack').hidden = !inClass;
+  $('gTitle').textContent = inClass ? gal.teacher : 'Photos';
+  $('gSelect').hidden = !inClass;
+  $('lbSend').style.display = gal.tab === 'classes' ? '' : 'none';
+  if (!inClass) { gal.selecting = false; gal.selected = []; }
+  syncSelection();
+  const body = $('gBody');
+  body.scrollTop = 0;
+  if (gal.tab === 'recent') return renderRecent(body);
+  if (!gal.pin) { gal.view = 'pin'; return renderPin(body); }
+  if (gal.view === 'class') return renderClassPhotos(body, true);
+  return renderClassList(body);
+}
+
+/* ---- Just taken (this device) ---- */
+function readRecent() {
+  try {
+    const list = JSON.parse(ls(RECENT_KEY) || '[]');
+    const today = localDate();
+    return Array.isArray(list) ? list.filter(x => x && x.day === today && x.src) : [];
+  } catch (e) { return []; }
+}
+
+function rememberRecent(shot) {
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = 640; c.height = 360;
+    c.getContext('2d').drawImage(img, 0, 0, 640, 360);
+    let list = readRecent();
+    list.unshift({ day: localDate(), taken: shot.takenAt, teacher: shot.cls.teacher, grade: shot.cls.grade || '', border: shot.border, src: c.toDataURL('image/jpeg', 0.72) });
+    list = list.slice(0, RECENT_MAX);
+    while (list.length) { // shrink until it fits in browser storage
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(list)); break; } catch (e) { list.pop(); }
+    }
+  };
+  img.src = shot.dataUrl;
+}
+
+function renderRecent(body) {
+  const list = readRecent();
+  if (!list.length) {
+    body.innerHTML = '<div class="gEmpty"><div><b>📸</b>No photos on this screen yet today.<br>Snap your creation to see it here!</div></div>';
+    return;
+  }
+  body.innerHTML = '<p class="gNote">Photos taken on this screen today. They\'re also saved to each class\'s folder.</p>';
+  const grid = document.createElement('div'); grid.className = 'gGrid gBigGrid';
+  gal.items = list.map(x => ({ src: x.src, taken: x.taken, teacher: x.teacher, grade: x.grade, border: x.border, local: true }));
+  gal.items.forEach((it, i) => {
+    const b = document.createElement('button'); b.className = 'gThumb';
+    b.innerHTML = '<img alt=""><span class="cap"></span>';
+    b.querySelector('img').src = it.src;
+    b.querySelector('.cap').textContent = it.teacher + ' · ' + fmtTime(it.taken);
+    b.onclick = () => showLightbox(i);
+    grid.appendChild(b);
+  });
+  body.appendChild(grid);
+}
+
+/* ---- PIN ---- */
+let pinEntry = '';
+function renderPin(body) {
+  pinEntry = '';
+  body.innerHTML =
+    '<div class="pinBox"><h3>🔒 Class photos</h3><p>Teachers: enter the PIN to look back at every class\'s photos.</p>' +
+    '<div class="pinDots" id="pinDots"></div><div class="pinPad" id="pinPad"></div><div class="pinMsg" id="pinMsg"></div></div>';
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓'].forEach(k => {
+    const b = document.createElement('button');
+    b.textContent = k; if (k === '✓') b.className = 'ok';
+    b.setAttribute('aria-label', k === '⌫' ? 'Delete' : k === '✓' ? 'Enter' : k);
+    b.onclick = () => pinPress(k);
+    $('pinPad').appendChild(b);
+  });
+  drawPinDots();
+}
+function drawPinDots() {
+  const n = Math.max(4, pinEntry.length);
+  $('pinDots').innerHTML = Array.from({ length: n }, (_, i) => '<i class="' + (i < pinEntry.length ? 'f' : '') + '"></i>').join('');
+}
+async function pinPress(k) {
+  if (!$('pinDots')) return;
+  if (k === '⌫') pinEntry = pinEntry.slice(0, -1);
+  else if (k === '✓') return submitPin();
+  else if (pinEntry.length < 8) pinEntry += k;
+  $('pinMsg').textContent = '';
+  drawPinDots();
+}
+async function submitPin() {
+  if (!pinEntry) return;
+  $('pinMsg').textContent = 'Checking…';
+  const res = await api({ action: 'gallery_classes', pin: pinEntry });
+  if (res && res.ok) {
+    gal.pin = pinEntry; gal.classes = res.classes || []; gal.view = 'classes';
+    beep(880, 0.08); renderGallery();
+  } else {
+    const dots = $('pinDots'); dots.classList.remove('shake'); void dots.offsetWidth; dots.classList.add('shake');
+    $('pinMsg').textContent = res && res.error === 'pin' ? 'Wrong PIN — try again.' : 'Can\'t reach the server right now.';
+    pinEntry = ''; drawPinDots(); beep(220, 0.2);
+  }
+}
+
+/* ---- Class list ---- */
+async function renderClassList(body) {
+  const token = ++gal.token;
+  if (!gal.classes.length) {
+    body.innerHTML = '<div class="gEmpty"><div>Loading classes…</div></div>';
+    const res = await api({ action: 'gallery_classes', pin: gal.pin });
+    if (token !== gal.token) return;
+    gal.classes = (res && res.ok && res.classes) || [];
+  }
+  if (!gal.classes.length) {
+    body.innerHTML = '<div class="gEmpty"><div><b>🗂️</b>No class photos yet.<br>They\'ll show up here after the first save.</div></div>';
+    return;
+  }
+  body.innerHTML = '<p class="gNote">Pick a class to see every photo it has taken, newest first.</p>';
+  const grid = document.createElement('div'); grid.className = 'gClassGrid';
+  gal.classes.forEach(c => {
+    const b = document.createElement('button'); b.className = 'gClass';
+    b.innerHTML = '<div class="cover">🐯</div><div class="meta"><b></b><span></span></div>';
+    b.querySelector('b').textContent = c.teacher;
+    b.querySelector('span').textContent = (c.grade ? c.grade + ' · ' : '') + c.count + ' photo' + (c.count === 1 ? '' : 's') + ' · last ' + fmtDay(c.last);
+    b.onclick = () => { gal.teacher = c.teacher; gal.view = 'class'; gal.photos = []; gal.total = 0; renderGallery(); };
+    grid.appendChild(b);
+    if (c.coverId) loadThumb(c.coverId, token).then(src => { if (src) b.querySelector('.cover').innerHTML = '<img alt="" src="' + src + '">'; });
+  });
+  body.appendChild(grid);
+}
+
+/* ---- One class's photos ---- */
+async function renderClassPhotos(body, fresh) {
+  const token = fresh ? ++gal.token : gal.token;
+  if (fresh) body.innerHTML = '<div class="gEmpty"><div>Loading photos…</div></div>';
+  const res = await api({ action: 'gallery_photos', pin: gal.pin, teacher: gal.teacher, offset: gal.photos.length, limit: PAGE_SIZE });
+  if (token !== gal.token) return;
+  if (!res || !res.ok) {
+    if (res && res.error === 'pin') { gal.pin = null; return renderGallery(); }
+    body.innerHTML = '<div class="gEmpty"><div><b>⚠️</b>Couldn\'t load photos. Check the connection and try again.</div></div>';
+    return;
+  }
+  gal.total = res.total;
+  gal.photos = gal.photos.concat(res.photos || []);
+  gal.items = gal.photos.map(p => ({ id: p.id, taken: p.taken, teacher: gal.teacher, grade: p.grade, border: p.border }));
+  if (!gal.items.length) { body.innerHTML = '<div class="gEmpty"><div><b>📷</b>No photos for this class yet.</div></div>'; return; }
+
+  body.innerHTML = '';
+  body.insertAdjacentHTML('beforeend', '<p class="gNote">' + gal.total + ' photo' + (gal.total === 1 ? '' : 's') + ' · newest first</p>');
+  let lastDay = '', grid = null;
+  gal.items.forEach((it, i) => {
+    const day = fmtDay(it.taken, true);
+    if (day !== lastDay) {
+      lastDay = day;
+      body.insertAdjacentHTML('beforeend', '<div class="gDate"></div>');
+      body.lastElementChild.textContent = day;
+      grid = document.createElement('div'); grid.className = 'gGrid'; body.appendChild(grid);
+    }
+    const b = document.createElement('button'); b.className = 'gThumb';
+    b.innerHTML = '<span class="spin">Loading…</span><span class="cap"></span><span class="check">✓</span>';
+    b.dataset.id = it.id;
+    b.querySelector('.cap').textContent = fmtTime(it.taken) + (it.border ? ' · ' + it.border : '');
+    b.onclick = () => gal.selecting ? toggleSelect(it.id) : showLightbox(i);
+    grid.appendChild(b);
+    loadThumb(it.id, token).then(src => {
+      if (src) b.insertAdjacentHTML('afterbegin', '<img alt="" src="' + src + '">'), b.querySelector('.spin').remove();
+      else { b.classList.add('err'); b.querySelector('.spin').textContent = '🚫'; }
+    });
+  });
+  if (gal.photos.length < gal.total) {
+    const more = document.createElement('button');
+    more.className = 'big retake gMore'; more.textContent = 'Show more photos';
+    more.onclick = () => { more.disabled = true; more.textContent = 'Loading…'; renderClassPhotos(body, false); };
+    body.appendChild(more);
+  }
+  syncSelection();
+}
+
+/* ---- Select photos to send ---- */
+function setSelecting(on) {
+  gal.selecting = on;
+  if (!on) gal.selected = [];
+  syncSelection();
+}
+function toggleSelect(id) {
+  const i = gal.selected.indexOf(id);
+  if (i > -1) gal.selected.splice(i, 1);
+  else {
+    const max = (gal.mail && gal.mail.maxPhotos) || 20;
+    if (gal.selected.length >= max) { toast('📎 That\'s the limit', 'Up to ' + max + ' photos per email', 2200); return; }
+    gal.selected.push(id);
+  }
+  syncSelection();
+}
+function selectToday() {
+  const today = new Date().toDateString();
+  const max = (gal.mail && gal.mail.maxPhotos) || 20;
+  const ids = gal.items.filter(it => it.id && new Date(it.taken).toDateString() === today).map(it => it.id);
+  if (!ids.length) { toast('📅 No photos today', 'This class has no photos from today', 2200); return; }
+  gal.selected = ids.slice(0, max);
+  if (ids.length > max) toast('📎 Picked the newest ' + max, 'That\'s the most for one email', 2400);
+  syncSelection();
+}
+function syncSelection() {
+  const inClass = gal.tab === 'classes' && gal.view === 'class';
+  $('gBody').classList.toggle('selecting', inClass && gal.selecting);
+  $('gSelect').classList.toggle('on', gal.selecting);
+  $('gSelect').textContent = gal.selecting ? '✖ Done selecting' : '☑️ Select to send';
+  $('selBar').hidden = !(inClass && gal.selecting);
+  const n = gal.selected.length;
+  $('selCount').textContent = n ? n + ' photo' + (n === 1 ? '' : 's') + ' selected' : 'Tap photos to pick them';
+  $('selSend').disabled = !n;
+  document.querySelectorAll('#gBody .gThumb[data-id]').forEach(b => b.classList.toggle('sel', gal.selected.indexOf(b.dataset.id) > -1));
+}
+
+/* ---- Send dialog ---- */
+async function openSend(ids) {
+  if (!ids.length || !gal.pin) return;
+  gal.sendIds = ids; gal.extra = [];
+  const dlg = $('sendDlg');
+  $('sendErr').textContent = ''; $('sendExtra').value = '';
+  $('sendTitle').textContent = 'Send ' + ids.length + ' photo' + (ids.length === 1 ? '' : 's');
+  const strip = $('sendStrip'); strip.innerHTML = '';
+  ids.slice(0, 8).forEach(id => {
+    const im = document.createElement('img'); im.alt = '';
+    if (gal.thumbs[id]) im.src = gal.thumbs[id];
+    strip.appendChild(im);
+  });
+  if (ids.length > 8) strip.insertAdjacentHTML('beforeend', '<div class="more">+' + (ids.length - 8) + '</div>');
+  $('sendChips').innerHTML = '<span class="sendHint">Loading people…</span>';
+  $('sendGo').disabled = true;
+  dlg.classList.add('show'); dlg.setAttribute('aria-hidden', 'false');
+  bumpIdle();
+
+  if (!gal.contacts) {
+    const res = await api({ action: 'gallery_contacts', pin: gal.pin });
+    if (!res || !res.ok) {
+      $('sendChips').innerHTML = '';
+      $('sendErr').textContent = res && res.error === 'pin' ? 'PIN expired — close and unlock again.' : 'Can\'t reach the server right now.';
+      return;
+    }
+    gal.contacts = res.contacts || [];
+    gal.mail = { domain: res.domain || '', message: res.message || 'Check out what we did in Tiger Lab today!', maxPhotos: res.maxPhotos || 20, quota: res.quota };
+  }
+  $('sendMsg').value = gal.mail.message;
+  $('sendExtra').placeholder = gal.mail.domain ? 'Add another @' + gal.mail.domain + ' email' : 'Add another email';
+  $('sendHint').textContent = gal.mail.domain ? 'Extra addresses must end in @' + gal.mail.domain + '. Add people to the Contacts tab to send anywhere else.' : '';
+  renderChips();
+  $('sendGo').disabled = false;
+}
+
+function renderChips(keepOn) {
+  const wrap = $('sendChips'); wrap.innerHTML = '';
+  const isOn = (email, dflt) => keepOn ? keepOn.indexOf(email) > -1 : dflt;
+  const cls = String(gal.teacher || '').toLowerCase();
+  // Class teacher first, then principals/admin, then everyone else.
+  const rank = c => (c.teacher && c.teacher.toLowerCase() === cls) ? 0 : /principal|admin|office/i.test(c.role) ? 1 : 2;
+  const list = gal.contacts.slice().sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+  if (!list.length && !gal.extra.length) {
+    wrap.innerHTML = '<span class="sendHint">No contacts yet — add emails on the sheet\'s Contacts tab, or type one below.</span>';
+  }
+  list.forEach(c => {
+    const b = document.createElement('button'); b.className = 'chip2'; b.dataset.email = c.email;
+    b.textContent = c.name;
+    if (c.role) { const sm = document.createElement('small'); sm.textContent = c.role; b.appendChild(sm); }
+    if (isOn(c.email, rank(c) === 0)) b.classList.add('on'); // default: pre-select this class's teacher
+    b.onclick = () => b.classList.toggle('on');
+    wrap.appendChild(b);
+  });
+  gal.extra.forEach(em => {
+    const b = document.createElement('button'); b.className = 'chip2' + (isOn(em, true) ? ' on' : ''); b.dataset.email = em; b.textContent = em;
+    b.onclick = () => b.classList.toggle('on');
+    wrap.appendChild(b);
+  });
+}
+
+function addExtraEmail() {
+  const em = $('sendExtra').value.trim().toLowerCase();
+  if (!em) return;
+  const dom = gal.mail && gal.mail.domain;
+  const valid = /^[^\s@<>(),;:"]+@[^\s@<>(),;:"]+\.[a-z]{2,}$/i.test(em);
+  const known = (gal.contacts || []).some(c => c.email === em);
+  if (!valid || (!known && dom && !em.endsWith('@' + dom))) {
+    $('sendErr').textContent = dom ? 'Use a @' + dom + ' address (or add them to the Contacts tab).' : 'That doesn\'t look like an email address.';
+    return;
+  }
+  const chip = document.querySelector('#sendChips .chip2[data-email="' + CSS.escape(em) + '"]');
+  if (chip) chip.classList.add('on');
+  else {
+    const on = Array.from(document.querySelectorAll('#sendChips .chip2.on')).map(c => c.dataset.email);
+    gal.extra.push(em); on.push(em);
+    renderChips(on); // keep everyone already tapped
+  }
+  $('sendExtra').value = ''; $('sendErr').textContent = '';
+}
+
+async function doSend() {
+  if ($('sendExtra').value.trim()) addExtraEmail();
+  const to = Array.from(document.querySelectorAll('#sendChips .chip2.on')).map(c => c.dataset.email);
+  if (!to.length) { $('sendErr').textContent = 'Tap at least one person to send to.'; return; }
+  const btn = $('sendGo');
+  btn.disabled = true; btn.textContent = 'Sending…'; $('sendErr').textContent = '';
+  let res = null;
+  try {
+    const r = await fetch(API, { method: 'POST', body: JSON.stringify({ key: KEY, action: 'send', pin: gal.pin, ids: gal.sendIds, to, message: $('sendMsg').value }) });
+    res = await r.json();
+  } catch (e) { res = null; }
+  btn.disabled = false; btn.textContent = '✉️ Send';
+  if (res && res.ok) {
+    closeSend(); closeLightbox(); setSelecting(false);
+    cheer();
+    const names = res.to || [];
+    toast('📨 Sent!', res.sent + ' photo' + (res.sent === 1 ? '' : 's') + ' to ' + (names.length > 2 ? names.slice(0, 2).join(', ') + ' +' + (names.length - 2) : names.join(' & ')), 3500);
+  } else {
+    $('sendErr').textContent = res ? (res.error === 'pin' ? 'PIN expired — close and unlock again.' : res.error || res.message) : 'Couldn\'t send — check the connection and try again.';
+  }
+}
+
+function closeSend() {
+  const dlg = $('sendDlg');
+  dlg.classList.remove('show'); dlg.setAttribute('aria-hidden', 'true');
+}
+
+// Thumbnails load a few at a time so the server isn't flooded.
+const thumbQueue = []; let thumbActive = 0;
+function loadThumb(id, token) {
+  if (gal.thumbs[id]) return Promise.resolve(gal.thumbs[id]);
+  return new Promise(resolve => { thumbQueue.push({ id, token, resolve }); pumpThumbs(); });
+}
+function pumpThumbs() {
+  while (thumbActive < 4 && thumbQueue.length) {
+    const job = thumbQueue.shift();
+    if (job.token !== gal.token) { job.resolve(null); continue; }
+    thumbActive++;
+    api({ action: 'gallery_thumb', pin: gal.pin, id: job.id }).then(res => {
+      if (res && res.ok && res.data) gal.thumbs[job.id] = res.data;
+      job.resolve(gal.thumbs[job.id] || null);
+    }).finally(() => { thumbActive--; pumpThumbs(); });
+  }
+}
+
+/* ---- Lightbox ---- */
+async function showLightbox(i) {
+  if (i < 0 || i >= gal.items.length) return;
+  gal.index = i;
+  const it = gal.items[i];
+  const lb = $('lightbox');
+  lb.classList.add('show'); lb.setAttribute('aria-hidden', 'false');
+  $('lbPrev').disabled = i === 0;
+  $('lbNext').disabled = i === gal.items.length - 1;
+  $('lbInfo').textContent = it.teacher + (it.grade ? ' · ' + it.grade : '') + ' · ' + fmtDay(it.taken, true) + ' ' + fmtTime(it.taken) + (it.border ? ' · ' + it.border : '');
+  const dl = $('lbDownload'), drive = $('lbDrive');
+  drive.style.display = it.id ? '' : 'none';
+  if (it.id) drive.href = 'https://drive.google.com/file/d/' + it.id + '/view';
+  const fileName = 'Tiger Lab - ' + it.teacher + ' - ' + String(it.taken).slice(0, 10) + '.jpg';
+  dl.download = fileName;
+
+  if (it.local) { setLightboxImage(it.src); dl.href = it.src; return; }
+  // Show the thumbnail right away, then swap in the full photo.
+  setLightboxImage(gal.thumbs[it.id] || '', !it.full);
+  dl.removeAttribute('href');
+  if (!it.full) {
+    const res = await api({ action: 'gallery_photo', pin: gal.pin, id: it.id });
+    if (res && res.ok && res.data) it.full = res.data;
+  }
+  if (gal.index !== i) return; // moved on while loading
+  if (it.full) { setLightboxImage(it.full); dl.href = it.full; }
+  else { $('lbLoading').textContent = 'Couldn\'t load this photo.'; $('lbLoading').classList.add('show'); }
+}
+function setLightboxImage(src, loading) {
+  const img = $('lbImg');
+  if (src) img.src = src; else img.removeAttribute('src');
+  img.style.visibility = src ? 'visible' : 'hidden';
+  $('lbLoading').textContent = 'Loading…';
+  $('lbLoading').classList.toggle('show', !!loading);
+}
+function closeLightbox() {
+  const lb = $('lightbox');
+  lb.classList.remove('show'); lb.setAttribute('aria-hidden', 'true');
+}
+
+/* ---- helpers ---- */
+async function api(params) {
+  try {
+    const q = new URLSearchParams(Object.assign({ key: KEY, t: Date.now() }, params));
+    const r = await fetch(API + '?' + q.toString());
+    return await r.json();
+  } catch (e) { return null; }
+}
+function fmtTime(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+function fmtDay(iso, long) {
+  const d = new Date(iso); if (isNaN(d)) return '';
+  const today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === y.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString('en-US', long ? { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' } : { month: 'short', day: 'numeric' });
+}
+
 /* ======================= UTIL ======================= */
-function setControls(on) { $('controls').classList.toggle('locked', !on); $('changeBtn').disabled = !on; $('flipBtn').disabled = !on; }
+function setControls(on) { $('controls').classList.toggle('locked', !on); $('changeBtn').disabled = !on; $('flipBtn').disabled = !on; $('galleryBtn').disabled = !on; }
 function toast(big, small, ms) {
   const t = $('toast');
   t.innerHTML = esc(big) + (small ? '<small>' + esc(small) + '</small>' : '');
