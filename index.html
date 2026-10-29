@@ -158,7 +158,10 @@ footer.locked{opacity:.3;pointer-events:none}
 
 <script>
 /* ======================= SETTINGS ======================= */
-const DEFAULT_API   = '';          // optional: paste the /exec URL here instead of using ?api=
+// Built-in connection: the plain page address works on any device, no setup link needed.
+// If you redeploy to a NEW /exec URL or change KIOSK_KEY in the sheet, update these two lines and re-upload.
+const DEFAULT_API   = 'https://script.google.com/macros/s/AKfycbwEGy3qGxkABwDdivmPO5wVnhDjS8_b1Ps7UF8Ial0-6UVIYhytmyan5aK1MYCOcK2K-w/exec';
+const DEFAULT_KEY   = '01686b0c90';
 const AUTO_SAVE_SEC = 10;          // review screen auto-saves after this many seconds
 const MANUAL_MIN    = 30;          // a tapped class choice lasts this long before the schedule takes over again
 const MIRROR_SAVED  = false;       // false = saved photo shows the real orientation (writing reads correctly)
@@ -171,8 +174,10 @@ const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k)
 
 const qs = new URLSearchParams(location.search);
 ['api', 'key'].forEach(k => { const v = qs.get(k); if (v) ls('bb_' + k, v); });
-const API = qs.get('api') || ls('bb_api') || DEFAULT_API;
-const KEY = qs.get('key') || ls('bb_key') || '';
+// Order: link override (?api=&key=) → built-in values → whatever this browser saved earlier.
+// Built-in values beat saved ones so devices set up with an old address fix themselves.
+const API = qs.get('api') || DEFAULT_API || ls('bb_api') || '';
+const KEY = qs.get('key') || DEFAULT_KEY || ls('bb_key') || '';
 if (qs.has('api') || qs.has('key')) history.replaceState(null, '', location.pathname);
 
 const FALLBACK_BORDERS = [
@@ -255,8 +260,13 @@ async function loadConfig(announce) {
     if (!c.ok) throw new Error(c.error || 'Server said no.');
     if (!c.borders || !c.borders.length) c.borders = FALLBACK_BORDERS;
     await loadBorderImages(c.borders);
+    const defaultChanged = !state.config || String(state.config.defaultBorder || '') !== String(c.defaultBorder || '');
     state.config = c;
-    if (!state.borderName || !c.borders.some(b => b.name === state.borderName)) state.borderName = defaultBorderName();
+    // Jump to the default frame on first load, when the sheet's DEFAULT_BORDER changes,
+    // or when the selected frame was removed — unless a photo is in progress.
+    if (!state.busy && (defaultChanged || !state.borderName || !c.borders.some(b => b.name === state.borderName))) {
+      state.borderName = defaultBorderName();
+    }
     renderBorders(); renderWho(); drawOverlay();
     if (announce) toast('🔄 Updated', c.blocks.length + ' Tiger Lab classes today', 2200);
   } catch (err) {
