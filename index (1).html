@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Build Booth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0E1A33; --navy-2:#16264A; --navy-3:#22365F; --line:#2E4677;
+  --orange:#F7931E; --orange-2:#FFB347; --orange-dk:#B8620A;
+  --ink:#FFFFFF; --muted:#A9BBDD; --green:#22B573; --green-dk:#167A4D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(1200px 600px at 50% -10%,#1B2D57 0%,var(--navy) 60%);color:var(--ink);
+  font-family:'Fredoka',system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;color:inherit;border:0;cursor:pointer}
+button:disabled{cursor:default}
+
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:12px;padding:12px 18px 16px}
+
+/* header */
+header{display:flex;align-items:center;gap:16px;min-height:56px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:28px;line-height:1}
+.logo .paw{width:48px;height:48px;border-radius:14px;background:var(--orange);display:grid;place-items:center;font-size:30px;box-shadow:0 4px 0 var(--orange-dk)}
+.logo small{display:block;font-size:13px;font-weight:600;color:var(--orange-2);letter-spacing:3px;margin-top:4px}
+.spacer{flex:1}
+.pending{background:#3B2A0B;color:var(--orange-2);border-radius:999px;padding:8px 14px;font-size:16px;font-weight:600}
+.classPill{display:flex;align-items:center;gap:12px;background:var(--navy-2);border:2px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;font-size:20px}
+.classPill .who{font-weight:700;color:var(--orange-2);max-width:34vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.classPill .who.none{color:var(--muted);font-weight:500}
+.pillBtn{background:var(--navy-3);border-radius:999px;padding:9px 16px;font-size:16px;font-weight:600}
+.clock{font-size:22px;font-weight:600;color:var(--muted);min-width:110px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* stage */
+main{display:flex;align-items:center;justify-content:center;min-height:0}
+.stage{position:relative;width:min(100%,calc((100vh - 250px) * 16 / 9));aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.stage video,.stage canvas,.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#video{transform:scaleX(-1)}
+.count{position:absolute;inset:0;display:none;place-items:center;font-size:min(42vh,40vw);font-weight:700;color:#fff;
+  text-shadow:0 8px 0 rgba(0,0,0,.35),0 0 40px rgba(247,147,30,.9);pointer-events:none}
+.count.show{display:grid}
+.count span{animation:pop .95s ease-out both}
+@keyframes pop{0%{transform:scale(1.8);opacity:0}25%{transform:scale(1);opacity:1}85%{opacity:1}100%{transform:scale(.85);opacity:0}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+
+.review{position:absolute;inset:0;display:none;background:#000}
+.review.show{display:block}
+.reviewBar{position:absolute;left:0;right:0;bottom:0;display:flex;gap:18px;justify-content:center;padding:22px;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.autoNote{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.6);padding:8px 16px;border-radius:999px;font-size:18px;font-weight:600}
+.big{height:84px;padding:0 34px;border-radius:22px;font-size:28px;font-weight:700;display:flex;align-items:center;gap:12px;transition:transform .08s}
+.big:active{transform:translateY(4px)}
+.big.save{background:var(--green);box-shadow:0 6px 0 var(--green-dk)}
+.big.retake{background:#3A4E7A;box-shadow:0 6px 0 #26365A}
+.big:disabled{opacity:.6}
+
+/* footer */
+footer{display:flex;align-items:center;gap:18px;transition:opacity .2s}
+footer.locked{opacity:.3;pointer-events:none}
+.borders{flex:1;display:flex;gap:12px;overflow-x:auto;padding:8px 4px 10px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--navy-2);border:3px solid transparent;border-radius:16px;padding:8px;width:152px;transition:transform .12s,border-color .12s}
+.chip canvas{width:132px;height:74px;border-radius:8px;display:block}
+.chip span{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:132px}
+.chip.on{border-color:var(--orange);background:var(--navy-3);transform:translateY(-4px)}
+.snap{flex:0 0 auto;height:128px;min-width:250px;border-radius:28px;background:var(--orange);font-size:34px;font-weight:700;
+  box-shadow:0 8px 0 var(--orange-dk);display:flex;align-items:center;justify-content:center;gap:14px;padding:0 30px;transition:transform .08s}
+.snap:active{transform:translateY(6px);box-shadow:0 2px 0 var(--orange-dk)}
+.snap .cam{font-size:50px}
+
+/* class picker */
+.modal{position:fixed;inset:0;background:rgba(5,10,25,.82);display:none;place-items:center;z-index:20}
+.modal.show{display:grid}
+.sheet{background:var(--navy-2);border:2px solid var(--line);border-radius:24px;padding:26px;width:min(920px,92vw);max-height:86vh;overflow:auto}
+.sheet h2{font-size:34px}
+.sheet p{color:var(--muted);margin:4px 0 18px;font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.tbtn{background:var(--navy-3);border-radius:16px;padding:16px 18px;text-align:left;font-size:23px;font-weight:600;border:2px solid transparent}
+.tbtn:active{border-color:var(--orange)}
+.tbtn small{display:block;color:var(--orange-2);font-size:17px;font-weight:500;margin-top:2px}
+.tbtn.other{border:2px dashed var(--line);background:transparent}
+.closeRow{display:flex;justify-content:flex-end;margin-top:18px}
+
+/* toast + blocker */
+.toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:var(--navy-2);border:4px solid var(--orange);
+  border-radius:30px;padding:30px 46px;font-size:40px;font-weight:700;text-align:center;opacity:0;pointer-events:none;transition:.2s;max-width:80vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:25}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toast small{display:block;font-size:22px;color:var(--muted);font-weight:500;margin-top:8px}
+.blocker{position:fixed;inset:0;background:var(--navy);display:none;place-items:center;text-align:center;padding:30px;z-index:30}
+.blocker.show{display:grid}
+.blocker h1{font-size:42px}
+.blocker p{font-size:20px;color:var(--muted);max-width:680px;margin:14px auto 24px;line-height:1.4;user-select:text}
+.blocker .big{margin:0 auto}
+
+@media (max-width:900px){
+  .clock{display:none}
+  footer{flex-wrap:wrap}
+  .snap{width:100%;height:96px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo" id="logo"><div class="paw">🐯</div><div>Build Booth<small>TIGER LAB</small></div></div>
+    <div class="spacer"></div>
+    <div class="pending" id="pending" hidden></div>
+    <div class="classPill"><span>📁</span><span class="who none" id="who">Loading…</span><button class="pillBtn" id="changeBtn">Change</button></div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <main>
+    <div class="stage" id="stage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="overlay" width="1280" height="720"></canvas>
+      <div class="count" id="count"></div>
+      <div class="flash" id="flash"></div>
+      <div class="review" id="review">
+        <img id="reviewImg" alt="Your creation photo">
+        <div class="autoNote" id="autoNote"></div>
+        <div class="reviewBar">
+          <button class="big retake" id="retakeBtn">🔄 Try again</button>
+          <button class="big save" id="saveBtn">✅ Save it!</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="controls">
+    <div class="borders" id="borders"></div>
+    <button class="snap" id="snapBtn"><span class="cam">📸</span>Snap it!</button>
+  </footer>
+</div>
+
+<div class="modal" id="picker">
+  <div class="sheet">
+    <h2>Whose class are you in?</h2>
+    <p>Tap your teacher's name.</p>
+    <div class="grid" id="pickGrid"></div>
+    <div class="closeRow"><button class="big retake" id="pickClose">✖ Cancel</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="blocker" id="blocker">
+  <div>
+    <h1 id="blockTitle"></h1>
+    <p id="blockMsg"></p>
+    <button class="big save" id="blockBtn">🔁 Try again</button>
+  </div>
+</div>
+
+<script>
+/* ======================= SETTINGS ======================= */
+const DEFAULT_API   = '';          // optional: paste the /exec URL here instead of using ?api=
+const AUTO_SAVE_SEC = 10;          // review screen auto-saves after this many seconds
+const MANUAL_MIN    = 30;          // a tapped class choice lasts this long before the schedule takes over again
+const MIRROR_SAVED  = false;       // false = saved photo shows the real orientation (writing reads correctly)
+const JPEG_QUALITY  = 0.88;
+
+/* ======================= STATE ======================= */
+const W = 1280, H = 720, T = 48;
+const $ = id => document.getElementById(id);
+const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
+
+const qs = new URLSearchParams(location.search);
+['api', 'key'].forEach(k => { const v = qs.get(k); if (v) ls('bb_' + k, v); });
+const API = qs.get('api') || ls('bb_api') || DEFAULT_API;
+const KEY = qs.get('key') || ls('bb_key') || '';
+if (qs.has('api') || qs.has('key')) history.replaceState(null, '', location.pathname);
+
+const FALLBACK_BORDERS = [
+  { name: 'Tiger Stripes', type: 'builtin', style: 'tiger', banner: '' },
+  { name: 'No Frame', type: 'builtin', style: 'none', banner: '' }
+];
+
+const state = { config: null, loading: false, manual: null, borderName: null, images: {}, busy: false, queue: [], autoTimer: null, shot: null };
+
+/* ======================= STARTUP ======================= */
+init();
+
+async function init() {
+  tickClock(); setInterval(tickClock, 1000);
+  wireUi();
+  if (!API || !KEY) {
+    block('Almost ready! 🐯', 'Open this page once using the kiosk link from the Build Booth sheet (menu ▸ Show kiosk link). The Chromebook will remember it after that.', false);
+    return;
+  }
+  try { await Promise.all([document.fonts.load('700 30px Fredoka'), document.fonts.load('600 24px Fredoka')]); } catch (e) {}
+  await Promise.allSettled([startCamera(), loadConfig()]);
+  setInterval(loadConfig, 10 * 60 * 1000);
+  setInterval(renderWho, 15 * 1000);
+  setInterval(flushQueue, 30 * 1000);
+  keepAwake();
+}
+
+function wireUi() {
+  $('snapBtn').onclick = snap;
+  $('changeBtn').onclick = () => { unlockAudio(); pickClass(); };
+  $('saveBtn').onclick = () => saveShot();
+  $('retakeBtn').onclick = retake;
+  $('blockBtn').onclick = () => location.reload();
+
+  // Logo: triple-tap refreshes schedule + borders
+  let taps = 0, tapTimer = null;
+  $('logo').onclick = () => {
+    taps++; clearTimeout(tapTimer); tapTimer = setTimeout(() => taps = 0, 700);
+    if (taps >= 3) { taps = 0; loadConfig(true); }
+  };
+
+  // Keyboard / USB arcade button / presenter clicker
+  document.addEventListener('keydown', e => {
+    if ($('picker').classList.contains('show')) return;
+    const reviewing = $('review').classList.contains('show');
+    if ([' ', 'Enter', 'PageDown', 'ArrowRight'].includes(e.key)) {
+      e.preventDefault();
+      if (reviewing) saveShot(); else snap();
+    } else if (['Escape', 'PageUp', 'ArrowLeft', 'Backspace'].includes(e.key) && reviewing) {
+      e.preventDefault(); retake();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') { keepAwake(); renderWho(); }
+  });
+}
+
+/* ======================= CAMERA ======================= */
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false
+    });
+    $('video').srcObject = stream;
+    await $('video').play().catch(() => {});
+  } catch (err) {
+    block('📷 Camera needed', 'Click the camera icon in the address bar, choose "Always allow", then press Try again. (' + (err.name || err) + ')', true);
+    throw err;
+  }
+}
+
+/* ======================= CONFIG ======================= */
+async function loadConfig(announce) {
+  if (state.loading) return;
+  state.loading = true;
+  try {
+    const r = await fetch(API + '?action=config&key=' + encodeURIComponent(KEY) + '&t=' + Date.now());
+    const c = await r.json();
+    if (!c.ok) throw new Error(c.error || 'Server said no.');
+    if (!c.borders || !c.borders.length) c.borders = FALLBACK_BORDERS;
+    await loadBorderImages(c.borders);
+    state.config = c;
+    if (!state.borderName || !c.borders.some(b => b.name === state.borderName)) state.borderName = defaultBorderName();
+    renderBorders(); renderWho(); drawOverlay();
+    if (announce) toast('🔄 Updated', c.blocks.length + ' Tiger Lab classes today', 2200);
+  } catch (err) {
+    console.warn('Config failed', err);
+    if (!state.config) block('Can\'t reach the Build Booth server', String(err.message || err), true);
+    else if (announce) toast('⚠️ No connection', 'Using the last schedule', 2500);
+  } finally {
+    state.loading = false;
+  }
+}
+
+function loadBorderImages(borders) {
+  return Promise.all(borders.filter(b => b.type === 'image' && b.data).map(b => new Promise(res => {
+    const img = new Image();
+    img.onload = () => { state.images[b.name] = img; res(); };
+    img.onerror = () => res();
+    img.src = b.data;
+  })));
+}
+
+function defaultBorderName() {
+  const c = state.config;
+  if (!c) return null;
+  const hit = c.borders.find(b => b.name.toLowerCase() === String(c.defaultBorder || '').toLowerCase());
+  return (hit || c.borders[0]).name;
+}
+
+function currentBorder() {
+  const list = (state.config && state.config.borders) || FALLBACK_BORDERS;
+  return list.find(b => b.name === state.borderName) || list[0];
+}
+
+/* ======================= WHO'S HERE ======================= */
+function scheduledClass() {
+  const c = state.config;
+  if (!c) return null;
+  const d = new Date();
+  const now = d.getHours() * 60 + d.getMinutes();
+  const blocks = c.blocks || [];
+  const strict = blocks.filter(b => b.start <= now && now < b.end).sort((a, b) => b.start - a.start);
+  if (strict.length) return strict[0];
+  let best = null, bestDist = 1e9;
+  blocks.forEach(b => {
+    let dist = null;
+    if (now < b.start && b.start - now <= c.graceBefore) dist = b.start - now;
+    else if (now >= b.end && now - b.end < c.graceAfter) dist = now - b.end + 0.5;
+    if (dist !== null && dist < bestDist) { best = b; bestDist = dist; }
+  });
+  return best;
+}
+
+function currentClass() {
+  if (state.manual && Date.now() - state.manual.at < MANUAL_MIN * 60000) return state.manual;
+  state.manual = null;
+  return scheduledClass();
+}
+
+function renderWho() {
+  if (state.config && state.config.today !== localDate() && !state.loading) loadConfig();
+  const cl = currentClass();
+  const el = $('who');
+  el.textContent = cl ? cl.teacher + (cl.grade ? ' · ' + cl.grade : '') : 'Tap Change to pick a class';
+  el.classList.toggle('none', !cl);
+}
+
+function pickClass() {
+  return new Promise(resolve => {
+    const grid = $('pickGrid');
+    grid.innerHTML = '';
+    const list = (state.config && state.config.teachers) || [];
+    list.forEach(t => grid.appendChild(teacherBtn(t.teacher, t.grade, '', () => done({ teacher: t.teacher, grade: t.grade || '' }))));
+    const other = (state.config && state.config.otherFolder) || 'Unsorted';
+    grid.appendChild(teacherBtn('🤔 Other / Not sure', '', 'other', () => done({ teacher: other, grade: '' })));
+    $('pickClose').onclick = () => done(null);
+    $('picker').classList.add('show');
+
+    function done(v) {
+      $('picker').classList.remove('show');
+      if (v) { state.manual = Object.assign({ at: Date.now() }, v); renderWho(); }
+      resolve(v);
+    }
+  });
+}
+
+function teacherBtn(name, grade, cls, onClick) {
+  const b = document.createElement('button');
+  b.className = 'tbtn ' + cls;
+  b.innerHTML = esc(name) + (grade ? '<small>' + esc(grade) + '</small>' : '');
+  b.onclick = onClick;
+  return b;
+}
+
+/* ======================= SNAP FLOW ======================= */
+async function snap() {
+  if (state.busy) return;
+  unlockAudio(); goFullscreen();
+  const video = $('video');
+  if (!video.videoWidth) { toast('📷 Camera warming up…', 'Try again in a second', 1800); return; }
+
+  let cls = currentClass();
+  if (!cls) { cls = await pickClass(); if (!cls) return; }
+
+  state.busy = true; setControls(false);
+  const count = $('count');
+  count.classList.add('show');
+  for (const n of [3, 2, 1]) {
+    count.innerHTML = '<span>' + n + '</span>';
+    beep(n === 1 ? 880 : 620, 0.18);
+    await sleep(1000);
+  }
+  count.classList.remove('show'); count.innerHTML = '';
+
+  const takenAt = new Date();
+  shutter();
+  const f = $('flash'); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+
+  const border = currentBorder();
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  drawCover(ctx, video);
+  drawBorder(ctx, border);
+  drawStamp(ctx, cls, takenAt);
+
+  state.shot = { dataUrl: canvas.toDataURL('image/jpeg', JPEG_QUALITY), cls, border: border.name, takenAt: takenAt.toISOString() };
+  showReview();
+}
+
+function showReview() {
+  $('reviewImg').src = state.shot.dataUrl;
+  $('saveBtn').disabled = false; $('retakeBtn').disabled = false;
+  $('review').classList.add('show');
+  let left = AUTO_SAVE_SEC;
+  const note = $('autoNote');
+  note.textContent = 'Auto-saving in ' + left;
+  clearInterval(state.autoTimer);
+  state.autoTimer = setInterval(() => {
+    left--;
+    note.textContent = 'Auto-saving in ' + left;
+    if (left <= 0) saveShot();
+  }, 1000);
+}
+
+function retake() {
+  if (!$('review').classList.contains('show')) return;
+  clearInterval(state.autoTimer);
+  $('review').classList.remove('show');
+  state.shot = null; state.busy = false; setControls(true);
+}
+
+async function saveShot() {
+  const shot = state.shot;
+  if (!shot || $('saveBtn').disabled) return;
+  clearInterval(state.autoTimer);
+  $('saveBtn').disabled = true; $('retakeBtn').disabled = true;
+  $('autoNote').textContent = 'Saving…';
+
+  const ok = await upload(shot);
+  $('review').classList.remove('show');
+  state.shot = null;
+  if (ok) {
+    cheer();
+    toast('🎉 Saved!', 'In ' + shot.cls.teacher + '\'s folder', 3200);
+  } else {
+    state.queue.push(shot); updatePending();
+    toast('📦 Got it!', 'It will upload in a moment', 3200);
+  }
+  state.borderName = defaultBorderName() || state.borderName;
+  renderBorders(); drawOverlay();
+  await sleep(3200);
+  state.busy = false; setControls(true);
+}
+
+async function upload(shot) {
+  try {
+    const r = await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({
+        key: KEY, teacher: shot.cls.teacher, grade: shot.cls.grade || '', border: shot.border,
+        takenAt: shot.takenAt, image: shot.dataUrl, kiosk: /CrOS/.test(navigator.userAgent) ? 'Chromebook' : 'Browser'
+      })
+    });
+    const j = await r.json();
+    if (!j.ok) console.warn('Save refused:', j.error);
+    return !!j.ok;
+  } catch (err) {
+    console.warn('Save failed', err);
+    return false;
+  }
+}
+
+async function flushQueue() {
+  if (state.busy || !state.queue.length) return;
+  while (state.queue.length) {
+    if (!(await upload(state.queue[0]))) break;
+    state.queue.shift();
+  }
+  updatePending();
+}
+
+function updatePending() {
+  const n = state.queue.length;
+  $('pending').hidden = !n;
+  $('pending').textContent = '⏳ ' + n + ' waiting to upload';
+}
+
+/* ======================= BORDER PICKER ======================= */
+function renderBorders() {
+  const wrap = $('borders');
+  wrap.innerHTML = '';
+  const list = (state.config && state.config.borders) || FALLBACK_BORDERS;
+  list.forEach(b => {
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (b.name === state.borderName ? ' on' : '');
+    const cv = document.createElement('canvas');
+    cv.width = 264; cv.height = 148;
+    const ctx = cv.getContext('2d');
+    ctx.scale(264 / W, 148 / H);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#5D7BB8'); g.addColorStop(1, '#2C3E66');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    emoji(ctx, '🏗️', W / 2, H / 2 + 20, 300);
+    drawBorder(ctx, b);
+    const label = document.createElement('span');
+    label.textContent = b.name;
+    chip.append(cv, label);
+    chip.onclick = () => {
+      state.borderName = b.name;
+      wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+      chip.classList.add('on');
+      drawOverlay(); beep(740, 0.06);
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+function drawOverlay() {
+  const ctx = $('overlay').getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+  drawBorder(ctx, currentBorder());
+}
+
+/* ======================= DRAWING ======================= */
+function drawCover(ctx, video) {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  if (!vw) return;
+  const s = Math.max(W / vw, H / vh), dw = vw * s, dh = vh * s;
+  ctx.save();
+  if (MIRROR_SAVED) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+  ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
+  ctx.restore();
+}
+
+function drawBorder(ctx, b) {
+  if (!b) return;
+  if (b.type === 'image') {
+    const img = state.images[b.name];
+    if (img) ctx.drawImage(img, 0, 0, W, H);
+  } else if (b.style !== 'none') {
+    const p = PAINTERS[b.style] || PAINTERS.classic;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.roundRect(T, T, W - 2 * T, H - 2 * T, 22); ctx.clip('evenodd');
+    p.fill(ctx);
+    ctx.restore();
+    ctx.save();
+    ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.35)';
+    ctx.beginPath(); ctx.roundRect(T, T, W - 2 * T, H - 2 * T, 22); ctx.stroke();
+    ctx.restore();
+    if (p.extras) p.extras(ctx);
+  }
+  if (b.banner) drawBanner(ctx, b.banner);
+}
+
+let seed = 1;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+const PAINTERS = {
+  classic: {
+    fill(ctx) {
+      ctx.fillStyle = '#F7931E'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(255,255,255,.16)'; ctx.lineWidth = 10;
+      for (let x = -H; x < W; x += 34) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + H, H); ctx.stroke(); }
+      ctx.strokeStyle = '#0E1A33'; ctx.lineWidth = 8; ctx.strokeRect(4, 4, W - 8, H - 8);
+    },
+    extras(ctx) { emoji(ctx, '🐯', T + 6, T + 6, 70); emoji(ctx, '🐾', W - T - 6, H - T - 6, 52); }
+  },
+
+  tiger: {
+    fill(ctx) {
+      seed = 7;
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#FFA230'); g.addColorStop(1, '#EE8410');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#1B1B1B';
+      const stripe = (x, y, dx, dy, nx, ny) => {
+        const len = T * (0.7 + rnd() * 0.35), wid = 22 + rnd() * 10, bend = (rnd() - 0.5) * 16;
+        ctx.beginPath();
+        ctx.moveTo(x - dx * wid / 2, y - dy * wid / 2);
+        ctx.quadraticCurveTo(x + nx * len * 0.5 - dx * wid * 0.2 + dx * bend, y + ny * len * 0.5 - dy * wid * 0.2 + dy * bend,
+                             x + nx * len + dx * bend, y + ny * len + dy * bend);
+        ctx.quadraticCurveTo(x + nx * len * 0.5 + dx * wid * 0.3 + dx * bend, y + ny * len * 0.5 + dy * wid * 0.3 + dy * bend,
+                             x + dx * wid / 2, y + dy * wid / 2);
+        ctx.closePath(); ctx.fill();
+      };
+      for (let x = 30; x < W; x += 64 + rnd() * 20) { stripe(x, 0, 1, 0, 0, 1); stripe(x + 20, H, 1, 0, 0, -1); }
+      for (let y = 40; y < H; y += 64 + rnd() * 20) { stripe(0, y, 0, 1, 1, 0); stripe(W, y + 20, 0, 1, -1, 0); }
+    },
+    extras(ctx) { emoji(ctx, '🐯', T + 6, T + 6, 74); emoji(ctx, '🐾', W - T - 6, T + 6, 54); }
+  },
+
+  blueprint: {
+    fill(ctx) {
+      ctx.fillStyle = '#1D4E89'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1;
+      for (let x = 0; x <= W; x += 16) { ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+      for (let y = 0; y <= H; y += 16) { ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
+      ctx.strokeStyle = 'rgba(255,255,255,.65)'; ctx.lineWidth = 2;
+      for (let x = T + 32; x < W - T; x += 32) {
+        const long = (x - T) % 160 === 0;
+        ctx.beginPath(); ctx.moveTo(x, T - (long ? 18 : 10)); ctx.lineTo(x, T - 3); ctx.stroke();
+      }
+    },
+    extras(ctx) {
+      gear(ctx, T + 4, T + 4, 46, 10, '#FFD166');
+      gear(ctx, T - 4, T + 66, 24, 8, '#FFFFFF');
+      gear(ctx, W - T - 4, H - T - 4, 46, 10, '#FFD166');
+      gear(ctx, W - T + 4, H - T - 66, 24, 8, '#FFFFFF');
+    }
+  },
+
+  space: {
+    fill(ctx) {
+      seed = 21;
+      const g = ctx.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, '#0B1026'); g.addColorStop(1, '#2A1050');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      for (let i = 0; i < 320; i++) {
+        const x = rnd() * W, y = rnd() * H, r = 0.6 + rnd() * 1.8, a = 0.4 + rnd() * 0.6;
+        if (Math.min(x, y, W - x, H - y) > T) continue;
+        ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+      }
+    },
+    extras(ctx) { emoji(ctx, '🪐', W - T - 6, T + 6, 78); emoji(ctx, '🚀', T + 6, H - T - 6, 66); emoji(ctx, '⭐', T + 4, T + 4, 42); }
+  },
+
+  rainbow: {
+    fill(ctx) {
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
+      const cols = ['#E53935', '#FB8C00', '#FDD835', '#43A047', '#1E88E5', '#8E24AA'];
+      const b = T / cols.length;
+      cols.forEach((col, i) => {
+        ctx.strokeStyle = col; ctx.lineWidth = b + 1;
+        ctx.beginPath();
+        ctx.roundRect(b * i + b / 2, b * i + b / 2, W - b * (2 * i + 1), H - b * (2 * i + 1), Math.max(4, 30 - i * 4));
+        ctx.stroke();
+      });
+    },
+    extras(ctx) { emoji(ctx, '🌈', T + 10, T + 4, 66); emoji(ctx, '☁️', W - T - 8, T + 4, 60); }
+  },
+
+  bricks: {
+    fill(ctx) {
+      seed = 5;
+      const cols = ['#E53935', '#1E88E5', '#FDD835', '#43A047', '#FB8C00', '#F5F5F5'];
+      ctx.fillStyle = '#263238'; ctx.fillRect(0, 0, W, H);
+      const bw = 64, bh = 24;
+      for (let y = 0, r = 0; y < H; y += bh, r++) {
+        for (let x = (r % 2 ? -bw / 2 : 0); x < W; x += bw) {
+          ctx.fillStyle = cols[Math.floor(rnd() * cols.length)];
+          ctx.fillRect(x + 1, y + 1, bw - 2, bh - 2);
+          ctx.fillStyle = 'rgba(255,255,255,.3)';
+          [16, 48].forEach(sx => { ctx.beginPath(); ctx.arc(x + sx, y + bh / 2, 6, 0, Math.PI * 2); ctx.fill(); });
+          ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.fillRect(x + 1, y + bh - 5, bw - 2, 4);
+        }
+      }
+    },
+    extras(ctx) { emoji(ctx, '🧱', T + 4, T + 4, 58); emoji(ctx, '🔧', W - T - 4, H - T - 4, 52); }
+  },
+
+  confetti: {
+    fill(ctx) {
+      seed = 11;
+      ctx.fillStyle = '#5B2BD6'; ctx.fillRect(0, 0, W, H);
+      const cols = ['#FFD166', '#EF476F', '#06D6A0', '#4CC9F0', '#FFFFFF', '#F7931E'];
+      for (let i = 0; i < 520; i++) {
+        const x = rnd() * W, y = rnd() * H, rot = rnd() * Math.PI, col = cols[Math.floor(rnd() * cols.length)], dot = rnd() < 0.5;
+        if (Math.min(x, y, W - x, H - y) > T + 4) continue;
+        ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.fillStyle = col;
+        if (dot) { ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI * 2); ctx.fill(); } else ctx.fillRect(-6, -2.5, 12, 5);
+        ctx.restore();
+      }
+    },
+    extras(ctx) { emoji(ctx, '🎉', T + 6, T + 6, 66); emoji(ctx, '🎊', W - T - 6, T + 6, 62); }
+  },
+
+  gold: {
+    fill(ctx) {
+      const g = ctx.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, '#FCE38A'); g.addColorStop(.35, '#E0A526'); g.addColorStop(.65, '#FFE89A'); g.addColorStop(1, '#B97D10');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.font = 'bold 26px sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let x = T + 60; x < W - T - 40; x += 80) { ctx.fillText('★', x, T / 2); ctx.fillText('★', x, H - T / 2); }
+      for (let y = T + 60; y < H - T - 40; y += 80) { ctx.fillText('★', T / 2, y); ctx.fillText('★', W - T / 2, y); }
+    },
+    extras(ctx) { emoji(ctx, '🏆', T + 6, T + 6, 70); emoji(ctx, '🌟', W - T - 6, T + 6, 62); }
+  }
+};
+
+function gear(ctx, cx, cy, r, teeth, color) {
+  ctx.save(); ctx.translate(cx, cy);
+  ctx.beginPath();
+  const step = Math.PI * 2 / teeth, ri = r * 0.78;
+  const pt = (rr, a) => ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step;
+    pt(ri, a); pt(r, a + step * 0.18); pt(r, a + step * 0.48); pt(ri, a + step * 0.66);
+  }
+  ctx.closePath();
+  ctx.moveTo(r * 0.32, 0); ctx.arc(0, 0, r * 0.32, 0, Math.PI * 2);
+  ctx.fillStyle = color; ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 6;
+  ctx.fill('evenodd');
+  ctx.restore();
+}
+
+function emoji(ctx, ch, x, y, size) {
+  ctx.save();
+  ctx.font = size + 'px "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 8;
+  ctx.fillText(ch, x, y);
+  ctx.restore();
+}
+
+function drawBanner(ctx, text) {
+  ctx.save();
+  ctx.font = '700 30px Fredoka, sans-serif';
+  const w = ctx.measureText(text).width + 64, h = 56, x = (W - w) / 2, y = T - h / 2;
+  ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 12;
+  ctx.fillStyle = '#0E1A33';
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h / 2); ctx.fill();
+  ctx.shadowBlur = 0; ctx.lineWidth = 4; ctx.strokeStyle = '#F7931E'; ctx.stroke();
+  ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, W / 2, y + h / 2 + 2);
+  ctx.restore();
+}
+
+function drawStamp(ctx, cls, d) {
+  const label = (state.config && state.config.label) || 'TIGER LAB';
+  const left = '🐯 ' + label + '  ·  ' + cls.teacher + (cls.grade ? '  ·  ' + cls.grade : '');
+  const right = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) +
+                '  ·  ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  stampPill(ctx, left, 130, 'left');
+  stampPill(ctx, right, W - 130, 'right');
+}
+
+function stampPill(ctx, text, anchor, align) {
+  ctx.save();
+  ctx.font = '600 24px Fredoka, sans-serif';
+  const h = 46, w = ctx.measureText(text).width + 36;
+  const x = align === 'left' ? anchor : anchor - w, y = H - T - h / 2;
+  ctx.fillStyle = 'rgba(14,26,51,.9)';
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h / 2); ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.stroke();
+  ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x + 18, y + h / 2 + 1);
+  ctx.restore();
+}
+
+/* ======================= SOUND ======================= */
+let actx = null;
+function unlockAudio() {
+  try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {}
+}
+function beep(freq, dur, when) {
+  if (!actx) return;
+  const t = actx.currentTime + (when || 0);
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = 'sine'; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(actx.destination);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+function shutter() {
+  if (!actx) return;
+  const len = Math.floor(actx.sampleRate * 0.12);
+  const buf = actx.createBuffer(1, len, actx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  const src = actx.createBufferSource(), g = actx.createGain();
+  src.buffer = buf; g.gain.value = 0.5;
+  src.connect(g).connect(actx.destination); src.start();
+}
+function cheer() { [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.16, i * 0.11)); }
+
+/* ======================= UTIL ======================= */
+function setControls(on) { $('controls').classList.toggle('locked', !on); $('changeBtn').disabled = !on; }
+function toast(big, small, ms) {
+  const t = $('toast');
+  t.innerHTML = esc(big) + (small ? '<small>' + esc(small) + '</small>' : '');
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), ms || 2500);
+}
+function block(title, msg, retry) {
+  $('blockTitle').textContent = title; $('blockMsg').textContent = msg;
+  $('blockBtn').style.display = retry ? '' : 'none';
+  $('blocker').classList.add('show');
+}
+function tickClock() { $('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+function localDate() { const d = new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function goFullscreen() { if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); }
+async function keepAwake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) {} }
+</script>
+</body>
+</html>
