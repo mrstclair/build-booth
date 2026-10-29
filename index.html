@@ -20,10 +20,14 @@ body{background:radial-gradient(1200px 600px at 50% -10%,#1B2D57 0%,var(--navy) 
 button{font-family:inherit;color:inherit;border:0;cursor:pointer}
 button:disabled{cursor:default}
 
-.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:12px;padding:12px 18px 16px}
+/* minmax(0,1fr) stops the long border row from stretching the page wider than the screen */
+.app{height:100vh;height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:12px 18px 16px;overflow:hidden}
+.app > *{min-width:0}
 
 /* header */
-header{display:flex;align-items:center;gap:16px;min-height:56px}
+header{display:flex;align-items:center;gap:16px;min-height:56px;min-width:0}
+.logo{flex-shrink:0}
+.classPill{min-width:0}
 .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:28px;line-height:1}
 .logo .paw{width:48px;height:48px;border-radius:14px;background:var(--orange);display:grid;place-items:center;font-size:30px;box-shadow:0 4px 0 var(--orange-dk)}
 .logo small{display:block;font-size:13px;font-weight:600;color:var(--orange-2);letter-spacing:3px;margin-top:4px}
@@ -37,9 +41,11 @@ header{display:flex;align-items:center;gap:16px;min-height:56px}
 
 /* stage */
 main{display:flex;align-items:center;justify-content:center;min-height:0}
-.stage{position:relative;width:min(100%,calc((100vh - 250px) * 16 / 9));aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.stage{position:relative;width:min(100%,calc((100vh - 250px) * 16 / 9));width:min(100%,calc((100dvh - 250px) * 16 / 9));max-height:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 18px 50px rgba(0,0,0,.55)}
 .stage video,.stage canvas,.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#video{transform:scaleX(-1)}
+#video.mirror{transform:scaleX(-1)}
+.flipBtn{background:var(--navy-2);border:2px solid var(--line);border-radius:999px;padding:9px 16px;font-size:18px;font-weight:600;white-space:nowrap}
+.flipBtn:disabled{opacity:.5}
 .count{position:absolute;inset:0;display:none;place-items:center;font-size:min(42vh,40vw);font-weight:700;color:#fff;
   text-shadow:0 8px 0 rgba(0,0,0,.35),0 0 40px rgba(247,147,30,.9);pointer-events:none}
 .count.show{display:grid}
@@ -62,7 +68,7 @@ main{display:flex;align-items:center;justify-content:center;min-height:0}
 /* footer */
 footer{display:flex;align-items:center;gap:18px;transition:opacity .2s}
 footer.locked{opacity:.3;pointer-events:none}
-.borders{flex:1;display:flex;gap:12px;overflow-x:auto;padding:8px 4px 10px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.borders{flex:1;min-width:0;display:flex;gap:12px;overflow-x:auto;padding:8px 4px 10px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--navy-2);border:3px solid transparent;border-radius:16px;padding:8px;width:152px;transition:transform .12s,border-color .12s}
 .chip canvas{width:132px;height:74px;border-radius:8px;display:block}
 .chip span{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:132px}
@@ -97,10 +103,44 @@ footer.locked{opacity:.3;pointer-events:none}
 .blocker p{font-size:20px;color:var(--muted);max-width:680px;margin:14px auto 24px;line-height:1.4;user-select:text}
 .blocker .big{margin:0 auto}
 
+/* Narrow screens (phones upright, small windows): Snap button gets its own full-width row */
 @media (max-width:900px){
   .clock{display:none}
-  footer{flex-wrap:wrap}
-  .snap{width:100%;height:96px}
+  .logo{font-size:22px}
+  .logo .paw{width:40px;height:40px;font-size:24px}
+  .logo small{display:none}
+  .classPill{font-size:16px;padding:4px 4px 4px 12px}
+  .flipBtn{font-size:15px;padding:8px 12px}
+  footer{flex-wrap:wrap;gap:10px}
+  .borders{flex-basis:100%}
+  .snap{width:100%;height:84px;min-width:0;font-size:30px}
+  .stage{width:min(100%,calc((100vh - 330px) * 16 / 9));width:min(100%,calc((100dvh - 330px) * 16 / 9))}
+}
+@media (max-width:560px){
+  header{flex-wrap:wrap;gap:8px}
+  .spacer{display:none}
+  .classPill{order:3;flex:1 1 100%;justify-content:space-between}
+  .stage{width:100%}
+}
+
+/* Short screens (phones sideways, big displays at high zoom): one compact row at the bottom */
+@media (max-height:620px){
+  .app{gap:8px;padding:8px 12px 10px}
+  header{min-height:44px}
+  .logo{font-size:20px}
+  .logo .paw{width:36px;height:36px;font-size:22px;box-shadow:0 3px 0 var(--orange-dk)}
+  .logo small{display:none}
+  .classPill{font-size:15px;padding:3px 3px 3px 12px}
+  .pillBtn,.flipBtn{font-size:14px;padding:6px 10px}
+  footer{flex-wrap:nowrap;gap:10px}
+  .borders{flex-basis:auto;padding:4px 2px 6px;gap:8px}
+  .chip{width:112px;padding:5px;gap:3px}
+  .chip canvas{width:98px;height:55px}
+  .chip span{font-size:12px;max-width:98px}
+  .snap{width:auto;height:76px;min-width:150px;font-size:24px;padding:0 18px;border-radius:20px}
+  .snap .cam{font-size:32px}
+  .stage{width:min(100%,calc((100vh - 160px) * 16 / 9));width:min(100%,calc((100dvh - 160px) * 16 / 9));border-radius:14px}
+  .big{height:60px;font-size:20px;padding:0 20px}
 }
 </style>
 </head>
@@ -110,13 +150,14 @@ footer.locked{opacity:.3;pointer-events:none}
     <div class="logo" id="logo"><div class="paw">🐯</div><div>Build Booth<small>TIGER LAB</small></div></div>
     <div class="spacer"></div>
     <div class="pending" id="pending" hidden></div>
+    <button class="flipBtn" id="flipBtn" hidden>🔄 Flip camera</button>
     <div class="classPill"><span>📁</span><span class="who none" id="who">Loading…</span><button class="pillBtn" id="changeBtn">Change</button></div>
     <div class="clock" id="clock"></div>
   </header>
 
   <main>
     <div class="stage" id="stage">
-      <video id="video" autoplay playsinline muted></video>
+      <video id="video" class="mirror" autoplay playsinline muted></video>
       <canvas id="overlay" width="1280" height="720"></canvas>
       <div class="count" id="count"></div>
       <div class="flash" id="flash"></div>
@@ -208,6 +249,7 @@ async function init() {
 function wireUi() {
   $('snapBtn').onclick = snap;
   $('changeBtn').onclick = () => { unlockAudio(); pickClass(); };
+  $('flipBtn').onclick = () => { unlockAudio(); flipCamera(); };
   $('saveBtn').onclick = () => saveShot();
   $('retakeBtn').onclick = retake;
   $('blockBtn').onclick = () => location.reload();
@@ -237,17 +279,46 @@ function wireUi() {
 }
 
 /* ======================= CAMERA ======================= */
-async function startCamera() {
+let currentStream = null;
+
+// facing: 'user' = selfie camera, 'environment' = back camera. Remembered per device.
+async function startCamera(retrying) {
+  const facing = ls('bb_facing') === 'environment' ? 'environment' : 'user';
   try {
+    if (currentStream) currentStream.getTracks().forEach(t => t.stop());
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false
+      video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false
     });
-    $('video').srcObject = stream;
-    await $('video').play().catch(() => {});
+    currentStream = stream;
+    const v = $('video');
+    v.srcObject = stream;
+    const track = stream.getVideoTracks()[0];
+    const actual = (track && track.getSettings && track.getSettings().facingMode) || facing;
+    v.classList.toggle('mirror', actual !== 'environment'); // only mirror the selfie view
+    await v.play().catch(() => {});
+    updateFlipButton();
   } catch (err) {
+    if (facing === 'environment' && !retrying) { ls('bb_facing', 'user'); return startCamera(true); }
     block('📷 Camera needed', 'Click the camera icon in the address bar, choose "Always allow", then press Try again. (' + (err.name || err) + ')', true);
     throw err;
   }
+}
+
+async function updateFlipButton() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    $('flipBtn').hidden = devices.filter(d => d.kind === 'videoinput').length < 2;
+  } catch (e) { $('flipBtn').hidden = true; }
+}
+
+async function flipCamera() {
+  if (state.busy) return;
+  const next = ls('bb_facing') === 'environment' ? 'user' : 'environment';
+  ls('bb_facing', next);
+  $('flipBtn').disabled = true;
+  try { await startCamera(); } catch (e) {}
+  $('flipBtn').disabled = false;
+  beep(700, 0.06);
 }
 
 /* ======================= CONFIG ======================= */
@@ -767,7 +838,7 @@ function shutter() {
 function cheer() { [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.16, i * 0.11)); }
 
 /* ======================= UTIL ======================= */
-function setControls(on) { $('controls').classList.toggle('locked', !on); $('changeBtn').disabled = !on; }
+function setControls(on) { $('controls').classList.toggle('locked', !on); $('changeBtn').disabled = !on; $('flipBtn').disabled = !on; }
 function toast(big, small, ms) {
   const t = $('toast');
   t.innerHTML = esc(big) + (small ? '<small>' + esc(small) + '</small>' : '');
